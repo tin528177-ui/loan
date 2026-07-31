@@ -2,31 +2,32 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>進件專案快速比對系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機車與商品專案快速篩選工具</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 15px; max-width: 600px; margin: auto; background-color: #f4f6f9; color: #333; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a73e8; margin-top: 0; }
-        .form-group { margin-bottom: 14px; }
-        label { display: block; font-weight: bold; margin-bottom: 4px; }
-        select, input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
-        .checkbox-group { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
-        .checkbox-label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; }
-        .checkbox-label input { width: 16px; height: 16px; cursor: pointer; }
+        h2 { text-align: center; color: #1a73e8; margin-top: 0; font-size: 22px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-weight: bold; margin-bottom: 6px; }
+        select, input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+        .checkbox-label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 15px; }
+        .checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
         button { width: 100%; padding: 12px; background-color: #1a73e8; color: white; border: none; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #1557b0; }
-        #result { margin-top: 15px; padding: 12px; border-radius: 6px; background-color: #fff; border: 1px solid #e0e0e0; }
-        .result-item { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 6px; background-color: #fff; border: 1px solid #e0e0e0; }
+        .result-item { padding: 10px 0; border-bottom: 1px dashed #eee; }
         .result-item:last-child { border-bottom: none; }
-        .badge-bank { font-weight: bold; color: #1a73e8; font-size: 15px; }
-        .badge-amount { font-weight: bold; color: #d93025; font-size: 15px; float: right; }
-        .note { font-size: 12px; color: #666; margin-top: 2px; }
+        .badge-bank { font-weight: bold; color: #1a73e8; font-size: 16px; }
+        .badge-amount { font-weight: bold; color: #d93025; font-size: 16px; float: right; }
+        .note { font-size: 13px; color: #666; margin-top: 4px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>專案快速進件試算</h2>
+    <h2>專案快速比對工具</h2>
 
     <div class="form-group">
         <label>申辦類型</label>
@@ -45,22 +46,22 @@
         <label>機車持有時間</label>
         <select id="holdingTime">
             <option value="0">未滿 3 個月</option>
-            <option value="3">滿 3 個月 ~ 未滿 6 個月</option>
-            <option value="6">滿 6 個月以上</option>
+            <option value="3-6">滿 3 個月 ~ 未滿 6 個月</option>
+            <option value="6-12">滿 6 個月 ~ 1 年</option>
+            <option value="12">1 年以上</option>
         </select>
     </div>
 
     <div class="form-group">
         <label>客戶條件與資歷（可多選）</label>
         <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" id="hasGuarantor"> 有保人</label>
             <label class="checkbox-label"><input type="checkbox" id="hasCreditCard"> 持有信用卡（滿1年或檢附完整帳單）</label>
-            <label class="checkbox-label"><input type="checkbox" id="isVipJob"> 三師/軍公教/上市櫃千大/自營商設立滿2年</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasLabor1Year"> 勞保/現職滿 1 年（公司投保）</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasLaborHalfYear"> 勞保/現職滿半年（公司投保）</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasLabor"> 有勞保或健保APP證明</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasPayHalfYear"> 他牌繳息滿 6 期正常（含商品分期）</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasHistory18M"> 本公司/同業舊戶繳滿 18 期正常</label>
-            <label class="checkbox-label"><input type="checkbox" id="hasOtherBike"> 名下已有另一台機車貸款中（需已繳滿6期）</label>
+            <label class="checkbox-label"><input type="checkbox" id="hasLabor1Year"> 勞保滿 1 年</label>
+            <label class="checkbox-label"><input type="checkbox" id="hasLaborHalfYear"> 勞保滿半年（含以上）</label>
+            <label class="checkbox-label"><input type="checkbox" id="hasLabor"> 有勞保/現職證明</label>
+            <label class="checkbox-label"><input type="checkbox" id="hasPayHalfYear"> 他牌繳息滿半年正常</label>
+            <label class="checkbox-label"><input type="checkbox" id="hasOtherBike"> 名下已有另一台機車貸款中</label>
         </div>
     </div>
 
@@ -78,90 +79,99 @@ function toggleHoldingTime() {
 function evaluateLoan() {
     const type = document.getElementById('productType').value;
     const age = parseInt(document.getElementById('age').value) || 0;
-    const holdingMonths = parseInt(document.getElementById('holdingTime').value) || 0;
+    const holdingMonths = document.getElementById('holdingTime').value;
 
+    const hasGuarantor = document.getElementById('hasGuarantor').checked;
     const hasCard = document.getElementById('hasCreditCard').checked;
-    const isVipJob = document.getElementById('isVipJob').checked;
     const labor1Y = document.getElementById('hasLabor1Year').checked;
     const labor6M = document.getElementById('hasLaborHalfYear').checked || labor1Y;
     const labor = document.getElementById('hasLabor').checked || labor6M;
     const pay6M = document.getElementById('hasPayHalfYear').checked;
-    const history18M = document.getElementById('hasHistory18M').checked;
     const otherBike = document.getElementById('hasOtherBike').checked;
 
     const resultDiv = document.getElementById('result');
     let results = [];
 
     if (type === "機車") {
-        // 1. 合信 - 機車原融 (20-65歲, 車持需滿3個月)
-        if (age >= 20 && age <= 65 && holdingMonths >= 3) {
-            if (hasCard || isVipJob) {
-                results.push({ bank: "合信", name: "機車卡優專案", amount: "25 萬", note: "手續費6% | 需門牌與現勘照 | 信用卡/優質職業" });
+        // --- 保人專案 ---
+        if (hasGuarantor) {
+            if (age >= 20 && age <= 65) {
+                results.push({ bank: "合信", name: "機車保人專案", amount: "20 萬", note: "需附保人" });
             }
-            if (labor1Y || history18M) {
-                results.push({ bank: "合信", name: "機車A+專案", amount: "20 萬", note: "手續費6% | 勞保1年或同業繳滿18期" });
-            }
-            if (labor6M) {
-                results.push({ bank: "合信", name: "機車A專案", amount: "16 萬", note: "手續費6% | 工作滿半年證明" });
+            if (age >= 20 && age <= 50 && labor6M) {
+                results.push({ bank: "亞太", name: "機車保人專案", amount: "25 萬", note: "需附保人 | 年齡20-50歲且勞保滿半年" });
             }
         }
 
-        // 2. 亞太 - 機車
-        if (labor6M) {
+        // --- 車持時間導向專案 ---
+        // 1. 滿 3 個月 ~ 未滿 6 個月 -> 合信機車
+        if (holdingMonths === "3-6" && age >= 20 && age <= 65) {
+            results.push({ bank: "合信", name: "機車原融專案", amount: "16 - 25 萬", note: "車持滿3個月~未滿6個月" });
+        }
+
+        // 2. 滿 6 個月 ~ 1 年 -> 21世紀機車
+        if (holdingMonths === "6-12" && age >= 20 && age <= 50 && labor6M) {
+            results.push({ bank: "廿一世紀", name: "機車25專案", amount: "25 萬", note: "車持滿半年~1年 | 年齡20-50歲且勞保滿半年" });
+        }
+
+        // 3. 1 年以上 -> 亞太機車 (限制：20-50歲 & 勞保滿半年)
+        if (holdingMonths === "12" && age >= 20 && age <= 50 && labor6M) {
             if (otherBike) {
-                results.push({ bank: "亞太", name: "機車二貸專案", amount: "15 萬", note: "因名下有另一台機車，上限降為15萬" });
+                results.push({ bank: "亞太", name: "機車二貸專案", amount: "15 萬", note: "車持滿1年 | 名下已有另一台機車上限降為15萬" });
             } else {
-                results.push({ bank: "亞太", name: "機車專案", amount: "25 萬", note: "勞保滿半年" });
+                results.push({ bank: "亞太", name: "機車專案", amount: "25 萬", note: "車持滿1年 | 年齡20-50歲且勞保滿半年" });
             }
         }
 
-        // 3. 廿一世紀 - 機車25專案 (20-50歲, 車持滿半年)
-        if (age >= 20 && age <= 50 && holdingMonths >= 6 && labor6M) {
-            results.push({ bank: "廿一世紀", name: "機車25專案", amount: "25 萬", note: "內扣15%+6000 | 罰單需<3萬 | 正職勞保滿半年" });
+        // --- 常規標準條件 ---
+        if (age >= 20 && age <= 65 && holdingMonths !== "0") {
+            if (hasCard) {
+                results.push({ bank: "合信", name: "機車卡優專案", amount: "25 萬", note: "需持有信用卡" });
+            }
+            if (labor1Y) {
+                results.push({ bank: "合信", name: "機車A專案", amount: "16 - 20 萬", note: "勞保/現職滿1年" });
+            }
         }
 
-        // 4. 瑪吉PAY - 機車 (18-65歲)
+        // 瑪吉PAY - 機車
         if (age >= 18 && age <= 65) {
-            let noteStr = "內扣15%+6000 | 外島可承做";
-            if (age >= 55) noteStr += " | 超過55歲需補保人";
-            if (otherBike) noteStr += " | 輕鬆貸(1車2貸)前貸需繳足6期";
-            results.push({ bank: "瑪吉PAY", name: "機車輕鬆貸", amount: "10 萬", note: noteStr });
+            let ageNote = (age >= 55) ? " | 55歲以上需補保人" : "";
+            results.push({ bank: "瑪吉PAY", name: "機車貸款輕鬆貸", amount: "10 萬", note: `年齡18-65歲${ageNote} | 內扣15%+6000` });
         }
 
     } else if (type === "商品") {
         // 1. 合信 - 小額/手機 (20-45歲)
         if (age >= 20 && age <= 45) {
             if (hasCard) {
-                results.push({ bank: "合信", name: "手機卡優專案", amount: "10 萬", note: "手續費10% | 需信用卡與近2個月帳單" });
+                results.push({ bank: "合信", name: "手機卡優專案", amount: "10 萬", note: "需檢附信用卡與近2個月帳單" });
             }
-            if (labor || pay6M) {
-                results.push({ bank: "合信", name: "手機一般專案", amount: "7 萬", note: "手續費10% | 附勞保/健保APP或他牌繳息6期" });
+            if (labor) {
+                results.push({ bank: "合信", name: "手機一般專案", amount: "7 萬", note: "檢附勞保或健保APP" });
+            }
+            if (pay6M) {
+                results.push({ bank: "合信", name: "手機一般專案(繳息)", amount: "7 萬", note: "檢附名下分期6期完整繳息" });
             }
         }
 
-        // 2. 廿一世紀 - 商品貸A專案 (18-60歲)
-        if (age >= 18 && age <= 60 && (labor || isVipJob)) {
-            let noteStr = "內扣15%+6000 | 罰單需<10萬";
-            if (age >= 55) noteStr += " | 55歲以上需補55歲以下保人";
-            results.push({ bank: "廿一世紀", name: "商品貸A專案", amount: "12 萬", note: noteStr });
+        // 2. 亞太 - 商品貸 (限制：20-50歲 & 勞保滿半年)
+        if (age >= 20 && age <= 50 && labor6M) {
+            results.push({ bank: "亞太", name: "商品貸", amount: "12 萬", note: "年齡20-50歲 | 勞保滿半年" });
         }
 
-        // 3. 亞太 - 商品貸
-        if (labor) {
-            results.push({ bank: "亞太", name: "商品貸", amount: "12 萬", note: "需勞保證明" });
+        // 3. 廿一世紀 - 商品貸A專案 (18-60歲)
+        if (age >= 18 && age <= 60 && labor) {
+            let ageNote = (age >= 55) ? " | 55歲以上需補55歲以下保人" : "";
+            results.push({ bank: "廿一世紀", name: "商品貸A專案", amount: "12 萬", note: `有正常工作/勞保${ageNote}` });
         }
 
         // 4. 瑪吉PAY - 手機貸 (18-70歲未滿)
         if (age >= 18 && age < 70) {
-            let noteStr = "內扣15%+7500 | 外島可做";
-            if (age >= 55) noteStr += " | 55歲以上需補保人";
-
-            if (labor6M) {
-                results.push({ bank: "瑪吉PAY", name: "U質手機專案", amount: "10 萬", note: noteStr + " | 正職滿半年(工會投保不算)" });
-            } else if (labor) {
-                results.push({ bank: "瑪吉PAY", name: "一般手機貸", amount: "6 - 8 萬", note: noteStr + " | 有基本勞保/現職" });
-            } else {
-                results.push({ bank: "瑪吉PAY", name: "無財力手機專案", amount: "6 萬", note: noteStr + " | 無財力可評估" });
+            let ageNote = (age >= 55) ? " | 55歲以上需補保人" : "";
+            if (labor) {
+                results.push({ bank: "瑪吉PAY", name: "U質/一般手機貸", amount: "10 萬", note: `附勞保明細/健保APP${ageNote}` });
+            }
+            if (!hasCard && !labor && !pay6M) {
+                results.push({ bank: "瑪吉PAY", name: "小白/無財力專案", amount: "6 萬", note: `無需勞保證明可評估${ageNote}` });
             }
         }
 
@@ -171,7 +181,7 @@ function evaluateLoan() {
         }
     }
 
-    // 顯示結果
+    // 渲染結果
     if (results.length > 0) {
         let html = "<b>最高可操作方案推薦：</b><br><br>";
         results.forEach(item => {
@@ -185,7 +195,7 @@ function evaluateLoan() {
         });
         resultDiv.innerHTML = html;
     } else {
-        resultDiv.innerHTML = "<b style='color:orange;'>無完全匹配方案：</b>請確認是否滿足年齡、持有時間或基本資歷門檻。";
+        resultDiv.innerHTML = "<b style='color:orange;'>無匹配方案：</b>未滿足年齡、持有時間或資歷門檻。";
     }
 }
 </script>
