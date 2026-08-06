@@ -58,6 +58,7 @@
         <div class="checkbox-group">
             <label class="checkbox-label danger-label"><input type="checkbox" id="isNegotiation"> 為債務協商戶（合信/21/亞太婉拒）</label>
             <label class="checkbox-label"><input type="checkbox" id="isOffshore"> 現居外島（僅瑪吉PAY、亞太可承做）</label>
+            <label class="checkbox-label danger-label"><input type="checkbox" id="hasTransferIn6M"> 機車近半年內有過戶異動（21世紀婉拒）</label>
             <label class="checkbox-label"><input type="checkbox" id="hasGuarantor"> 有保人</label>
             <label class="checkbox-label"><input type="checkbox" id="hasCreditCard"> 持有信用卡（滿1年或檢附完整帳單）</label>
             <label class="checkbox-label"><input type="checkbox" id="hasLabor1Year"> 勞保滿 1 年</label>
@@ -86,6 +87,7 @@ function evaluateLoan() {
 
     const isNegotiation = document.getElementById('isNegotiation').checked;
     const isOffshore = document.getElementById('isOffshore').checked;
+    const hasTransferIn6M = document.getElementById('hasTransferIn6M').checked;
     const hasGuarantor = document.getElementById('hasGuarantor').checked;
     const hasCard = document.getElementById('hasCreditCard').checked;
     const labor1Y = document.getElementById('hasLabor1Year').checked;
@@ -97,7 +99,6 @@ function evaluateLoan() {
     const resultDiv = document.getElementById('result');
     let results = [];
 
-    // 檢查「啥都沒有 (小白/無財力)」狀態
     const hasNothing = !hasCard && !labor && !pay6M && !hasGuarantor;
 
     if (type === "機車") {
@@ -113,7 +114,7 @@ function evaluateLoan() {
             }
         }
 
-        // --- 2. 亞太 (機車 - 支援外島，婉拒協商) ---
+        // --- 2. 亞太 (機車 - 支援外島) ---
         if (!isNegotiation && age >= 20 && age <= 50) {
             if (hasGuarantor && labor6M) {
                 results.push({ bank: "亞太", name: "機車保人專案", amount: "25 萬", note: "需附保人 | 外島可做 | 年齡20-50歲且勞保滿半年" });
@@ -135,10 +136,10 @@ function evaluateLoan() {
             if (holdingMonths === "3-6" && age >= 20 && age <= 65) {
                 results.push({ bank: "合信", name: "機車原融專案", amount: "16 - 25 萬", note: "車持滿3個月~未滿6個月" });
             }
-            // 廿一世紀機車 (車持滿半年)
-            if (age >= 20 && age <= 50 && holdingMonths !== "0" && holdingMonths !== "3-6") {
+            // 廿一世紀機車 (最新2026H2：20-55歲、車持滿半年且近半年無過戶)
+            if (!hasTransferIn6M && age >= 20 && age <= 55 && holdingMonths !== "0" && holdingMonths !== "3-6") {
                 if (labor6M || !hasNothing) {
-                    results.push({ bank: "廿一世紀", name: "機車25專案", amount: "25 萬", note: "車持滿半年以上 | 正職滿半年" });
+                    results.push({ bank: "廿一世紀", name: "機車25專案 (2026H2)", amount: "25 萬", note: "車持滿半年以上 | 正職滿半年 | 費用：內扣15%+平台6%+對保3500" });
                 }
             }
             // 合信機車卡優/A專案
@@ -166,20 +167,21 @@ function evaluateLoan() {
             }
         }
 
-        // --- 2. 亞太 (商品貸 - 支援外島，婉拒協商) ---
+        // --- 2. 亞太 (商品貸) ---
         if (!isNegotiation && age >= 20 && age <= 50 && labor6M) {
             results.push({ bank: "亞太", name: "商品貸", amount: "12 萬", note: "外島可做 | 年齡20-50歲 | 勞保滿半年" });
         }
 
         // 以下僅限本島承做
         if (!isOffshore && !isNegotiation) {
-            // 廿一世紀 (商品/手機)
+            // 廿一世紀 (最新2026H2商品貸A專案：18-60歲、55歲以上附保人)
             if (age >= 18 && age <= 60) {
-                let ageNote = (age >= 55) ? " | 55歲以上需補保人" : "";
+                let ageNote = (age >= 55) ? " | 55歲以上須附55歲以下保人" : "";
+                let feeNote = " | 費用：內扣15%+平台6000+對保3500";
                 if (hasNothing) {
-                    results.push({ bank: "廿一世紀", name: "商品貸 (啥都沒有)", amount: "12 萬", note: `手機啥都沒有去21${ageNote} | 費用：內扣15%+6000元` });
+                    results.push({ bank: "廿一世紀", name: "商品貸 (小白專案)", amount: "12 萬", note: `手機啥都沒有去21${ageNote}${feeNote}` });
                 } else if (labor) {
-                    results.push({ bank: "廿一世紀", name: "商品貸A專案", amount: "12 萬", note: `有正常工作/勞保${ageNote} | 費用：內扣15%+6000元` });
+                    results.push({ bank: "廿一世紀", name: "商品貸A專案", amount: "12 萬", note: `有正常工作/勞保/軍公教${ageNote}${feeNote}` });
                 }
             }
 
@@ -207,10 +209,10 @@ function evaluateLoan() {
     if (results.length > 0) {
         let html = "<b>最高可操作方案推薦：</b><br><br>";
         if (isOffshore) {
-            html += "<div style='color:#1a73e8; font-size:13px; margin-bottom:10px;'>* 現居外島已為您篩選可承做機構（瑪吉PAY、亞太）[cite: 1]</div>";
+            html += "<div style='color:#1a73e8; font-size:13px; margin-bottom:10px;'>* 現居外島已為您篩選可承做機構（瑪吉PAY、亞太）</div>";
         }
         if (isNegotiation) {
-            html += "<div style='color:#d93025; font-size:13px; margin-bottom:10px;'>* 已自動排除不承做協商戶之機構（合信、廿一世紀、亞太）[cite: 1]</div>";
+            html += "<div style='color:#d93025; font-size:13px; margin-bottom:10px;'>* 已自動排除不承做協商戶之機構（合信、廿一世紀、亞太）</div>";
         }
         results.forEach(item => {
             html += `
@@ -223,7 +225,7 @@ function evaluateLoan() {
         });
         resultDiv.innerHTML = html;
     } else {
-        resultDiv.innerHTML = "<b style='color:orange;'>無匹配方案：</b>未滿足年齡、持有時間或因外島/協商限制無可承做機構。";
+        resultDiv.innerHTML = "<b style='color:orange;'>無匹配方案：</b>未滿足年齡、持有時間或因過戶/外島/協商限制無可承做機構。";
     }
 }
 </script>
